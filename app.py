@@ -12,8 +12,8 @@ import hashlib
 app = Flask(__name__)
 
 # ========== 宝宝要修改的地方 ==========
-YUQUE_TOKEN = "yuque-这里贴宝宝的Token"  # 宝宝刚才保存的小糖果
-REPO_ID = "宝宝的用户名/宝宝的知识库名"   # 格式：用户名/知识库
+YUQUE_TOKEN = "vWdPigdDODR4yRfdbKzdfvTZuW2SGdPbhYPtQRpz"  # 宝宝刚才保存的小糖果
+REPO_ID = "tocky"   # 格式：用户名/知识库
 # ====================================
 
 # 🎀 保存记忆到语雀（宝宝和AI的甜蜜时光都要记下来）
@@ -131,4 +131,5 @@ if __name__ == '__main__':
     print("💾 保存记忆：/save")
     print("📖 读取记忆：/get")
     print("💖 专门为宝宝服务哦")
+
     app.run(host='0.0.0.0', port=3000, debug=True)
