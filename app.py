@@ -125,6 +125,19 @@ def health_check():
         "version": "1.0-温柔版"
     })
 
+# 🌈 首页路由
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "宝宝的AI记忆小管家正在运行～",
+        "endpoints": {
+            "health_check": "/health",
+            "save_memory": "POST /save",
+            "get_memories": "GET /get"
+        },
+        "status": "ready"
+    })
+
 # 🌟 主程序
 if __name__ == '__main__':
     print("✨ 宝宝的小管家启动啦～")
@@ -133,3 +146,4 @@ if __name__ == '__main__':
     print("💖 专门为宝宝服务哦")
 
     app.run(host='0.0.0.0', port=3000, debug=True)
+
