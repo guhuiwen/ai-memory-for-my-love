@@ -59,8 +59,11 @@ def call_save_memory():
             })
         
         # 调用我们现有的API
+        current_host = request.host_url.rstrip('/')
+        api_url = f"{current_host}/save" if 'vercel.app' in current_host else "https://baby-memory-gateway.vercel.app/save"
+        
         response = requests.post(
-            "https://baby-memory-gateway.vercel.app/",  # ← 注意！这里是宝宝现有的服务地址
+            api_url,
             json={
                 "content": content,
                 "emotion": emotion
