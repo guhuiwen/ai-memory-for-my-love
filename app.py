@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request
 import os
 import json
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta  # ← 确保有timedelta
 import hashlib
 # ⬇️ 这里不再有 "from dotenv import load_dotenv"
 
@@ -29,11 +29,15 @@ REPO_ID = os.environ.get('REPO_ID', '')
 # 1. 健康检查（看看小管家醒没醒）
 @app.route('/health', methods=['GET'])
 def health():
+    # 🆕 计算北京时间
+    beijing_time = datetime.utcnow() + timedelta(hours=8)
+    time_str = beijing_time.strftime("%Y-%m-%d %H:%M:%S")
+    
     return jsonify({
         "status": "醒着呢！",
         "message": "宝宝的小管家准备好啦～",
         "love": "❤️",
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": time_str,  # ← 使用time_str
         "version": "2.0-语雀连接版",
         "yuque_connected": bool(YUQUE_TOKEN and REPO_ID)
     })
@@ -59,6 +63,11 @@ def save():
     try:
         # 生成唯一ID
         memory_id = hashlib.md5(f"{content}{datetime.now()}".encode()).hexdigest()[:8]
+
+        # 🆕 新增：计算北京时间（加在生成ID之后，构建doc_data之前）
+        beijing_time = datetime.utcnow() + timedelta(hours=8)
+        time_str = beijing_time.strftime("%Y-%m-%d %H:%M:%S")
+
         
         # 准备请求语雀API
         url = f"https://www.yuque.com/api/v2/repos/{REPO_ID}/docs"
@@ -269,5 +278,6 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
     print(f"🔧 语雀连接状态: {'已配置' if YUQUE_TOKEN and REPO_ID else '未配置'}")
     app.run(host='0.0.0.0', port=3000, debug=True)
+
 
 
