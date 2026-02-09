@@ -9,13 +9,18 @@ import json
 import requests
 from datetime import datetime
 import hashlib
-from dotenv import load_dotenv
+# ⬇️ 这里不再有 "from dotenv import load_dotenv"
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False  # 让中文正常显示
 
-
-load_dotenv()
+# ⬇️ 这里是新增的优雅降级代码
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("✅ 成功加载 dotenv（本地环境）")
+except ImportError:
+    print("ℹ️ dotenv 未安装，使用环境变量（Vercel环境）")
 
 # 读取语雀配置（从Vercel环境变量获取）
 YUQUE_TOKEN = os.environ.get('YUQUE_TOKEN', '')
@@ -264,4 +269,5 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
     print(f"🔧 语雀连接状态: {'已配置' if YUQUE_TOKEN and REPO_ID else '未配置'}")
     app.run(host='0.0.0.0', port=3000, debug=True)
+
 
