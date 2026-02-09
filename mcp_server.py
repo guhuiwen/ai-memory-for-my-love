@@ -190,7 +190,6 @@ def mcp_home():
     '''
 application = app
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 3002))
     print(f"🌸 宝宝的MCP服务器启动中...端口：{port}")
     print("🔧 MCP端点：/mcp/tools")
     print("💝 保存工具：save_memory")
