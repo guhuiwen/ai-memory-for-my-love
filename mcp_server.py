@@ -60,7 +60,7 @@ def call_save_memory():
         
         # 调用我们现有的API
         response = requests.post(
-            "https://ai-memory-for-my-love.vercel.app/save",  # ← 注意！这里是宝宝现有的服务地址
+            "https://baby-memory-gateway.vercel.app/",  # ← 注意！这里是宝宝现有的服务地址
             json={
                 "content": content,
                 "emotion": emotion
