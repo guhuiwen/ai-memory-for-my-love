@@ -83,7 +83,7 @@ def save():
             "body": f"""---
 记忆ID: {memory_id}
 情感: {emotion}
-时间: {time_str}  # ← 关键修改！
+时间: {time_str}  
 重要性: ⭐⭐⭐⭐⭐
 来源: 宝宝的AI伴侣
 ---
@@ -277,6 +277,7 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
     print(f"🔧 语雀连接状态: {'已配置' if YUQUE_TOKEN and REPO_ID else '未配置'}")
     app.run(host='0.0.0.0', port=3000, debug=True)
+
 
 
 
