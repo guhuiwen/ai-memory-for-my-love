@@ -182,7 +182,7 @@ def home():
                 <h3>📡 可用接口</h3>
                 <div class="endpoint">GET /health - 健康检查</div>
                 <div class="endpoint">POST /save - 保存记忆到语雀</div>
-                <p style="margin-top: 10px;">试试看：<a href=" " target="_blank">/health</a ></p >
+                <p style="margin-top: 10px;">试试看：<a href="/health" target="_blank">/health</a></p >
             </div>
             
             <div class="status-card">
@@ -228,3 +228,4 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
     print(f"🔧 语雀连接状态: {'已配置' if YUQUE_TOKEN and REPO_ID else '未配置'}")
     app.run(host='0.0.0.0', port=3000, debug=True)
+
