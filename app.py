@@ -61,19 +61,18 @@ def save():
         })
     
     try:
-        # 生成唯一ID
-        memory_id = hashlib.md5(f"{content}{datetime.now()}".encode()).hexdigest()[:8]
-
-        # 🆕 新增：计算北京时间（加在生成ID之后，构建doc_data之前）
+        # 🆕 先计算北京时间
         beijing_time = datetime.utcnow() + timedelta(hours=8)
         time_str = beijing_time.strftime("%Y-%m-%d %H:%M:%S")
-
+        
+        # 生成唯一ID（使用北京时间）
+        memory_id = hashlib.md5(f"{content}{beijing_time}".encode()).hexdigest()[:8]
         
         # 准备请求语雀API
         url = f"https://www.yuque.com/api/v2/repos/{REPO_ID}/docs"
         headers = {
             "X-Auth-Token": YUQUE_TOKEN,
-            "User-Agent": "Baby-Memory-Gateway/2.0",  # 🆕 改成英文
+            "User-Agent": "Baby-Memory-Gateway/2.0",
             "Content-Type": "application/json" 
         }
         
@@ -84,7 +83,7 @@ def save():
             "body": f"""---
 记忆ID: {memory_id}
 情感: {emotion}
-时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+时间: {time_str}  # ← 关键修改！
 重要性: ⭐⭐⭐⭐⭐
 来源: 宝宝的AI伴侣
 ---
@@ -93,7 +92,7 @@ def save():
 
 """,
             "format": "markdown",
-            "public": 0  # 私有文档
+            "public": 0
         }
         
         # 调用语雀API（修复编码问题）
@@ -278,6 +277,7 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
     print(f"🔧 语雀连接状态: {'已配置' if YUQUE_TOKEN and REPO_ID else '未配置'}")
     app.run(host='0.0.0.0', port=3000, debug=True)
+
 
 
 
