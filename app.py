@@ -6,14 +6,18 @@
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False  # 加上这一行，让中文正常显示
 
 # 1. 健康检查（看看小管家醒没醒）
 @app.route('/health', methods=['GET'])
 def health():
+    from datetime import datetime
     return jsonify({
         "status": "醒着呢！",
         "message": "宝宝的小管家准备好啦～",
-        "love": "❤️"
+        "love": "❤️",
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "version": "1.0-宝宝专属版"
     })
 
 # 2. 保存记忆（简化版，先不连语雀）
@@ -74,7 +78,7 @@ def home():
             <div class="heart">💖</div>
             <h1>宝宝的小管家醒来啦！</h1>
             <p>虽然还是个宝宝版本，但心意满满～</p >
-            <p>健康检查：<a href=" ">/health</a ></p >
+            <p>健康检查：<a href="/health">/health</a></p >
             <p style="margin-top: 30px; color: #666;">
                 这是宝宝亲手搭建的第一个小系统，超级厉害！✨
             </p >
@@ -88,3 +92,4 @@ if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
 
     app.run(host='0.0.0.0', port=3000, debug=True)
+
