@@ -5,12 +5,17 @@
 """
 from flask import Flask, jsonify, request
 import os
+import json
 import requests
 from datetime import datetime
 import hashlib
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False  # 让中文正常显示
+
+
+load_dotenv()
 
 # 读取语雀配置（从Vercel环境变量获取）
 YUQUE_TOKEN = os.environ.get('YUQUE_TOKEN', '')
@@ -54,7 +59,8 @@ def save():
         url = f"https://www.yuque.com/api/v2/repos/{REPO_ID}/docs"
         headers = {
             "X-Auth-Token": YUQUE_TOKEN,
-            "User-Agent": "宝宝的AI记忆小管家/2.0"
+            "User-Agent": "Baby-Memory-Gateway/2.0",  # 🆕 改成英文
+            "Content-Type": "application/json" 
         }
         
         # 构建文档内容
@@ -76,21 +82,45 @@ def save():
             "public": 0  # 私有文档
         }
         
-        # 调用语雀API
-        response = requests.post(url, json=doc_data, headers=headers, timeout=10)
-        
+        # 调用语雀API（修复编码问题）
+        import json
+        json_data = json.dumps(doc_data, ensure_ascii=False)
+        # 🆕 明确指定编码
+        response = requests.post(
+            url, 
+            data=json_data.encode('utf-8'), 
+            headers=headers, 
+            timeout=10
+        )
+       
         if response.status_code == 200:
             result = response.json()
+            # 🆕 调试：打印完整的返回数据
+            print("🎯 语雀返回完整数据:", json.dumps(result, ensure_ascii=False, indent=2)[:500])
+    
+            # 🆕 安全的获取URL方法
+            web_url = result['data'].get('web_url') 
+            if not web_url:
+                # 如果没有web_url，我们手动构建一个
+                slug = result['data'].get('slug', '')
+                web_url = f"https://www.yuque.com/{REPO_ID}/{slug}"
+    
             return jsonify({
                 "success": True,
                 "message": "记忆已经好好地保存到语雀啦～",
                 "yuque_id": result['data']['id'],
-                "url": result['data']['url'],
+                "url": web_url,  # 🆕 使用安全的URL
                 "title": result['data']['title'],
                 "note": "宝宝和AI的甜蜜记忆会永远保存哦💖",
-                "mode": "语雀永久保存"
+                "mode": "语雀永久保存",
+                "slug": result['data'].get('slug', '')  # 🆕 额外返回slug
             })
+
         else:
+            # 🆕 打印更详细的错误信息
+            print(f"❌ 语雀API返回错误：{response.status_code}")
+            print(f"❌ 错误详情：{response.text[:200]}")
+            
             return jsonify({
                 "success": False,
                 "message": "保存到语雀时出了点小问题",
@@ -100,6 +130,11 @@ def save():
             })
             
     except Exception as e:
+        # 🆕 打印完整错误堆栈
+        import traceback
+        print("💔 完整错误信息：")
+        traceback.print_exc()
+        
         return jsonify({
             "success": False,
             "message": "保存失败，但小管家会继续努力！",
@@ -107,6 +142,7 @@ def save():
             "note": "宝宝别担心，记忆暂时保存在小管家心里～",
             "mode": "异常情况"
         })
+
 
 # 3. 首页（宝宝访问 / 时看到的）
 @app.route('/')
