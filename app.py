@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 给宝宝的最最最简单的记忆网关
 只有3个功能，保证能运行！
@@ -85,4 +86,5 @@ def home():
 # 启动程序
 if __name__ == '__main__':
     print("✨ 宝宝的小管家启动中...")
+
     app.run(host='0.0.0.0', port=3000, debug=True)
