@@ -3,11 +3,19 @@
 宝宝的MCP记忆保存服务器
 让Kelivo可以直接调用保存记忆的工具
 """
+import os
+import sys
 from flask import Flask, request, jsonify
 import requests
-import os
 
 app = Flask(__name__)
+
+# Vercel特定的配置
+if 'VERCEL' in os.environ:
+    # 在Vercel环境中，确保我们监听到正确的端口
+    port = int(os.environ.get('PORT', 3000))
+else:
+    port = 3002
 
 # 从环境变量获取配置（复用现有配置）
 YUQUE_TOKEN = os.environ.get('YUQUE_TOKEN', '')
@@ -180,7 +188,7 @@ def mcp_home():
     </body>
     </html>
     '''
-
+application = app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 3002))
     print(f"🌸 宝宝的MCP服务器启动中...端口：{port}")
